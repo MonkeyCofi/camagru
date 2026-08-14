@@ -1,17 +1,18 @@
 <?php
     require_once "login.php";
+    // require_once "navbar.php";
     class Router 
     {
         private static $router;
         private array $routes;    // an associative array of routes where the route is the key and the value is the controller of the route
 
         public function __construct() {
-            echo "Router object has been constructed<br>";
+            // echo "<p>Router object has been constructed</p><br>";
             $this->routes = [];
         }
         // this function takes the uri and a callable function for the respective URI's controller
         public function add_route(string $uri, callable $controller) {
-            echo "adding $uri to the array of routes<br>";
+            // echo "adding $uri to the array of routes<br>";
             $this->routes[$uri] = $controller;
             
         }
@@ -28,13 +29,26 @@
                 echo "$key: $value<br>";
             }
         }
+
+        public function dispatch(string $uri) {
+            // echo $this->routes[$uri]();
+            return $this->routes[$uri]();
+        }
+
+        public function route(string $uri) {
+            foreach($this->routes as $route_uri => $view) {
+                if ($uri == $route_uri) {
+                    $this->dispatch($uri);
+                }
+            }
+        }
     }
     $request = $_SERVER["REQUEST_URI"];
     // adds the route to the routes 
-    $router = new Router();
+    $router = Router::get_router();
+    $router->add_route("/login", "login_page");
     
-    $router->add_route("/login", login_page());
-    // $router->print_routes();
+    // each time a user queries for a route,
 ?>
 
 <!DOCTYPE html>
@@ -46,6 +60,6 @@
     <title>Camagru</title>
 </head>
 <body>
-    <h1>Request: <?php echo $request ?></h1>
+    <?php echo $router->route() ?>
 </body>
 </html>
