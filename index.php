@@ -1,5 +1,6 @@
 <?php
     require_once "login.php";
+    require_once "gallery.php";
     // require_once "navbar.php";
     class Router 
     {
@@ -37,16 +38,23 @@
 
         public function route(string $uri) {
             foreach($this->routes as $route_uri => $view) {
+                if ($uri == "/") {
+                    return $this->routes["/gallery"]();
+                }
                 if ($uri == $route_uri) {
-                    $this->dispatch($uri);
+                    return $this->routes[$uri]();
+                    // echo "<p>found route</p><br>";
+                    // $this->dispatch($uri);
                 }
             }
         }
     }
-    $request = $_SERVER["REQUEST_URI"];
+    $request_uri = $_SERVER["REQUEST_URI"];
     // adds the route to the routes 
     $router = Router::get_router();
-    $router->add_route("/login", "login_page");
+    $router->add_route("/login", "login");
+    $router->add_route("/register", "register");
+    $router->add_route("/gallery", "gallery");
     
     // each time a user queries for a route,
 ?>
@@ -60,6 +68,10 @@
     <title>Camagru</title>
 </head>
 <body>
-    <?php echo $router->route() ?>
+    <!-- <h1>Camagru</h1> -->
+    <?php 
+        include "navbar.php";
+        echo $router->route($request_uri)
+    ?>
 </body>
 </html>

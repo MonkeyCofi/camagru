@@ -8,7 +8,12 @@
         <img id="hamburger" src="./public/assets/hamburger.png">
     </button>
     <h2>Logo</h2>
-    <span></span>
+    <span id="navbar-user-side">
+        <?php
+            // if the user is not logged in, add button to allow user to login
+            // otherwise, keep it as a bubble that has the user's pfp and username
+        ?>
+    </span>
 </nav>
 
 <script>
