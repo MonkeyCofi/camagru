@@ -1,7 +1,9 @@
 <div id="sidebar">
-    <button>Gallery</button>
-    <button>Upload</button>
-    <button>Settings</button>
+    <button class="sidebar-nav-opt">
+        <a href="/gallery">Gallery</a>
+    </button>
+    <button class="sidebar-nav-opt">Upload</button>
+    <button class="sidebar-nav-opt">Settings</button>
 </div>
 <nav id="navbar">
     <button id="sidebar-btn" style="display: flex; justify-content: center; align-items: center;">
@@ -12,6 +14,11 @@
         <?php
             // if the user is not logged in, add button to allow user to login
             // otherwise, keep it as a bubble that has the user's pfp and username
+            echo "
+                <button id='login-btn'>
+                    <a id='login-btn-text' href='/login'>Log in</a>
+                </button>
+            "
         ?>
     </span>
 </nav>

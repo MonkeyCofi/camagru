@@ -32,11 +32,7 @@
         }
 
         public function dispatch(string $uri) {
-            // echo $this->routes[$uri]();
-            return $this->routes[$uri]();
-        }
-
-        public function route(string $uri) {
+            // clean the uri string
             foreach($this->routes as $route_uri => $view) {
                 if ($uri == "/") {
                     return $this->routes["/gallery"]();
@@ -50,6 +46,13 @@
         }
     }
     $request_uri = $_SERVER["REQUEST_URI"];
+    $sanitized_uri = filter_var($request_uri, FILTER_SANITIZE_URL);
+    if (filter_var($sanitized_uri, FILTER_VALIDATE_URL)) {
+        echo "<p>URI is valid</p>";
+    } else {
+        echo "<p>URI is invalid</p>";
+    }
+    echo "<p style='font-size: 32px;'>Route: $request_uri</p>";
     // adds the route to the routes 
     $router = Router::get_router();
     $router->add_route("/login", "login");
@@ -71,7 +74,7 @@
     <!-- <h1>Camagru</h1> -->
     <?php 
         include "navbar.php";
-        echo $router->route($request_uri)
+        echo $router->dispatch($request_uri)
     ?>
 </body>
 </html>

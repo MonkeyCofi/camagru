@@ -66,6 +66,12 @@
     cursor: pointer;
 }
 
+.sidebar-nav-opt > a
+{
+    text-decoration: none;
+    color: inherit;
+}
+
 body
 {
     margin: 0;
@@ -130,6 +136,21 @@ body
 #username:hover
 {
     user-select: none;
+}
+
+#login-btn
+{
+    background-color: #0D00FF;
+    border-radius: 12px;
+    width: 5em;
+    height: 3em;
+}
+
+#login-btn > a
+{
+    text-decoration: none;
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
 }
 
 body
