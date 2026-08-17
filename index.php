@@ -1,6 +1,7 @@
 <?php
     require_once "login.php";
     require_once "gallery.php";
+    require_once "setup.php";
     // require_once "navbar.php";
     class Router 
     {
@@ -12,7 +13,7 @@
             $this->routes = [];
         }
         // this function takes the uri and a callable function for the respective URI's controller
-        public function add_route(string $uri, callable $controller) {
+        public function add_route(string $uri, callable $controller): void {
             // echo "adding $uri to the array of routes<br>";
             $this->routes[$uri] = $controller;
             
@@ -24,14 +25,14 @@
             return self::$router;
         }
 
-        public function print_routes() {
+        public function print_routes(): void {
             echo "Routes<br>";
             foreach ($this->routes as $key => $value) {
                 echo "$key: $value<br>";
             }
         }
 
-        public function dispatch(string $uri) {
+        public function dispatch(string $uri): string {
             // clean the uri string
             foreach($this->routes as $route_uri => $view) {
                 if ($uri == "/") {
@@ -45,21 +46,17 @@
             }
         }
     }
-    $request_uri = $_SERVER["REQUEST_URI"];
-    $sanitized_uri = filter_var($request_uri, FILTER_SANITIZE_URL);
-    if (filter_var($sanitized_uri, FILTER_VALIDATE_URL)) {
-        echo "<p>URI is valid</p>";
-    } else {
-        echo "<p>URI is invalid</p>";
+    function sanitize_url(string $url): string {
+        $sanitized = $filter_var($url, FILTER_SANITIZE_URL);
+        return $sanitized;
     }
-    echo "<p style='font-size: 32px;'>Route: $request_uri</p>";
-    // adds the route to the routes 
+
+    $request_uri = $_SERVER["REQUEST_URI"];
     $router = Router::get_router();
+
     $router->add_route("/login", "login");
     $router->add_route("/register", "register");
     $router->add_route("/gallery", "gallery");
-    
-    // each time a user queries for a route,
 ?>
 
 <!DOCTYPE html>
@@ -71,7 +68,6 @@
     <title>Camagru</title>
 </head>
 <body>
-    <!-- <h1>Camagru</h1> -->
     <?php 
         include "navbar.php";
         echo $router->dispatch($request_uri)

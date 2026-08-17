@@ -11,11 +11,12 @@
     }
 
     function register(): string {
+        // when the submit button is pressed, it should send a post request to 
         return '
-        <form action="welcome.php" method="post">
+        <form id="register-form" method="post">
             <input type="text" name="username" placeholder="Username">
-            <input type="password" name="password">
-            <input type="submit" placeholder="Register now">
+            <input type="password" name="password" placeholder="Password">
+            <input type="submit" value="Register">
         ';
     }
 ?>
