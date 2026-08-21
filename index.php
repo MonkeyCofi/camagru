@@ -2,7 +2,6 @@
     require_once "login.php";
     require_once "gallery.php";
     require_once "setup.php";
-    // require_once "navbar.php";
     class Router 
     {
         private static $router;
@@ -44,10 +43,11 @@
                     // $this->dispatch($uri);
                 }
             }
+            return "404 not found";
         }
     }
     function sanitize_url(string $url): string {
-        $sanitized = $filter_var($url, FILTER_SANITIZE_URL);
+        $sanitized = filter_var($url, FILTER_SANITIZE_URL);
         return $sanitized;
     }
 
