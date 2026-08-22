@@ -26,7 +26,6 @@
 # exec mariadbd --user=mysql --console --skip-networking=0
 
 # check if mariadb is already running
-
 if [ ! -f "/run/mysqld/mysqld.sock" ]; then
     mkdir -p /run/mysqld/
     chown $DB_USERNAME /run/mysqld/
@@ -42,6 +41,13 @@ fi
 
 if [ ! -d "/var/lib/mysql/mysql" ]; then
     mariadb-install-db --user=$DB_USERNAME --datadir=/var/lib/mysql > /dev/null
+    temp_file=$(mktemp)
+    cat << EOF > $temp_file
+FLUSH PRIVILEGES;
+GRANT ALL PRIVILEGES ON *.* TO '$DB_USERNAME'@'%' IDENTIFIED BY '$DB_PASSWORD' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+EOF
+    mariadb --user=$DB_USERNAME --bootstrap < $temp_file
 fi
 
-exec mariadbd --user=$DB_USERNAME --console --skip-networking=0
+exec mariadbd --user=$DB_USERNAME --console --skip-networking=0 --skip-name-resolve

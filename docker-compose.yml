@@ -3,11 +3,14 @@ services:
     ports:
       - "3306:3306"
     build:
-      context: ./
+      context: ${PWD}
       args:
         DB_USERNAME: ${DB_USERNAME}
     image: db
     volumes:
-      - $(PWD):/var/lib/mysql
+      - ./data:/var/lib/mysql
     env_file:
       - .env
+    environment:
+      MARIADB_ROOT_PASSWORD: your_secure_password
+      MARIADB_ROOT_HOST: '%'
