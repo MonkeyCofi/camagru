@@ -2,15 +2,32 @@ services:
   db:
     ports:
       - "3306:3306"
+    env_file:
+        - ./database/.env
     build:
-      context: ${PWD}
+      context: ./database
       args:
         DB_USERNAME: ${DB_USERNAME}
     image: db
     volumes:
       - ./data:/var/lib/mysql
-    env_file:
-      - .env
+    # maybe remove later
     environment:
       MARIADB_ROOT_PASSWORD: your_secure_password
       MARIADB_ROOT_HOST: '%'
+    # maybe remove later
+    networks:
+      - app
+  nginx:
+    ports:
+      - "8080:80"
+    build:
+      context: ./nginx
+    image: nginx
+    networks:
+      - app
+
+networks:
+  app:
+    driver: bridge
+    
