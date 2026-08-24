@@ -1,21 +1,22 @@
 services:
   db:
+    image: mariadb
     ports:
-      - "3306:3306"
+      - "8000:3306"
     env_file:
         - ./database/.env
-    build:
-      context: ./database
-      args:
-        DB_USERNAME: ${DB_USERNAME}
-    image: db
-    volumes:
-      - ./data:/var/lib/mysql
-    # maybe remove later
     environment:
-      MARIADB_ROOT_PASSWORD: your_secure_password
-      MARIADB_ROOT_HOST: '%'
-    # maybe remove later
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USERNAME}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+    # build:
+    #   context: ./database
+    #   args:
+    #     DB_USERNAME: ${DB_USERNAME}
+    container_name: db
+    volumes:
+      - db_data:/var/lib/mysql
     networks:
       - app
   nginx:
@@ -23,9 +24,29 @@ services:
       - "8080:80"
     build:
       context: ./nginx
-    image: nginx
+    image: nginx:alpine3.24
+    container_name: nginx
     networks:
       - app
+    volumes:
+      - src:/var/www/html
+
+  php-fpm:
+    image: php:8-fpm
+    volumes:
+      - src:/var/www/html
+    container_name: php-fpm
+    networks:
+      - app
+    
+volumes:
+  db_data:
+  src:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./src
 
 networks:
   app:
