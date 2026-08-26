@@ -1,5 +1,5 @@
 <?php
-    $servername = "127.0.0.1";
+    $servername = "db";
     $port = "3306";
     $dsn = "mysql:host=$servername;dbname=camagru;port=3306;";
     $username = "pipolint";

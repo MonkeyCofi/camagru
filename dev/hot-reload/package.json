@@ -1,0 +1,7 @@
+{
+  "name": "camagru-hot-reload",
+  "private": true,
+  "dependencies": {
+    "browser-sync": "^3.0.0"
+  }
+}

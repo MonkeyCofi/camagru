@@ -20,8 +20,8 @@ services:
     networks:
       - app
   nginx:
-    ports:
-      - "8080:80"
+    # ports:
+    #   - "8080:80"
     build:
       context: ./nginx
     image: nginx:alpine3.24
@@ -30,9 +30,25 @@ services:
       - app
     volumes:
       - src:/var/www/html
-
+      # - public_files:/var/www/html/public
+  hot-reload:
+    image: hot-reload
+    container_name: hot-reload
+    build:
+      context: ./dev/hot-reload
+    depends_on:
+      - nginx
+    ports:
+      - "8080:3000"
+    volumes:
+      - src:/var/www/html
+    networks:
+      - app
   php-fpm:
-    image: php:8-fpm
+    # image: php:8-fpm
+    image: php-fpm
+    build:
+      context: ./php-fpm
     volumes:
       - src:/var/www/html
     container_name: php-fpm
@@ -47,6 +63,12 @@ volumes:
       type: none
       o: bind
       device: ./src
+  # public_files:
+  #   driver: local
+  #   driver_opts:
+  #     type: none
+  #     o: bind
+  #     device: ./public
 
 networks:
   app:

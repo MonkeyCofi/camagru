@@ -6,3 +6,7 @@ down:
 
 up:
 	docker compose --env-file ./database/.env up -d
+
+all:
+	docker container rm --force $(qlist_containers)
+	make down; make build; make up
