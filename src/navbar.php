@@ -9,7 +9,7 @@
     <button id="sidebar-btn" style="display: flex; justify-content: center; align-items: center;">
         <img id="hamburger" src="./public/assets/hamburger.png">
     </button>
-    <h2>Logo</h2>
+    <a href="/"><h2>Logo</h2></a>
     <span id="navbar-user-side">
         <?php
             // if the user is not logged in, add button to allow user to login
