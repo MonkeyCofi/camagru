@@ -162,6 +162,13 @@ body
     gap: 12px;
 }
 
+.input-form
+{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 body
 {
     background-color: antiquewhite;

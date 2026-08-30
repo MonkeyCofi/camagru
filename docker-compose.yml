@@ -40,6 +40,7 @@ services:
       - nginx
     ports:
       - "8080:3000"
+      - "3000:3000"
     volumes:
       - src:/var/www/html
     networks:

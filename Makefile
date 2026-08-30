@@ -10,3 +10,6 @@ up:
 all:
 	docker container rm --force $(qlist_containers)
 	make down; make build; make up
+
+re:
+	make down; make build; make up
