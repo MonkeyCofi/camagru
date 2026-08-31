@@ -3,6 +3,8 @@
     require_once "gallery.php";
     require_once "setup.php";
     require_once "register.php";
+
+    $pdo = setup_pdo();
     class Router 
     {
         private static $router;

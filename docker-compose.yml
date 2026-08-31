@@ -31,6 +31,10 @@ services:
     volumes:
       - src:/var/www/html
       # - public_files:/var/www/html/public
+    environment:
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USERNAME}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
   hot-reload:
     image: hot-reload
     container_name: hot-reload
@@ -55,6 +59,10 @@ services:
     container_name: php-fpm
     networks:
       - app
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_USER_PASSWORD: ${DB_PASSWORD}
     
 volumes:
   db_data:
