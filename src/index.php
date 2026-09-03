@@ -29,12 +29,14 @@
             return self::$router;
         }
 
-        public function dispatch(string $uri): string {
+        public function dispatch(string $uri, $args = null): string {
             $method = $_SERVER["REQUEST_METHOD"];
             if ($uri == '/') {
                 return $this->routes['GET']['/gallery']();
             }
-            return $this->routes[$method][$uri]() ?? "404 not found";
+            if (array_key_exists($uri, $this->routes[$method]))
+                return $this->routes[$method][$uri]($args);
+            return "404 not found";
         }
     }
 
@@ -42,10 +44,16 @@
     $uri = $_SERVER['REQUEST_URI'];
 
     // register routes
-    $router->get("/login", "login");    
     $router->get("/login", "login");
     $router->get("/gallery", "gallery");
     $router->get("/register", "register");
+    $router->post("/register", "register_user");
+    $router->post("/register", function (UserDetails $user) use ($pdo) {
+        register_user($pdo, $user);
+    });
+    $router->get("/users", function () use ($pdo) {
+        return get_users($pdo);
+    });
 ?>
 
 <!DOCTYPE html>
@@ -59,8 +67,17 @@
 <body>
     <?php 
         include "navbar.php";
-        echo $router->dispatch($uri)
-        // echo $router->dispatch($request_uri)
+        /**
+         * instead of dispatching call immediately, pass arguments first
+         * 
+         */
+        $request_method = $_SERVER['REQUEST_METHOD'];
+        $user = null;
+        if ($request_method == 'POST' && $uri == '/register') {
+            $user = new UserDetails($_POST['username'], $_POST['firstname'], $_POST['password'], $_POST['email']);
+        }
+        echo "calling dispatch<br>";
+        echo $router->dispatch($uri, $user);
     ?>
 </body>
 </html>
