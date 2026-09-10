@@ -14,11 +14,21 @@
         <?php
             // if the user is not logged in, add button to allow user to login
             // otherwise, keep it as a bubble that has the user's pfp and username
-            echo "
-                <button id='login-btn'>
-                    <a id='login-btn-text' href='/login'>Log in</a>
-                </button>
-            "
+            if (isset($_SESSION['user_id'])) {
+                echo "<p>Logged in</p>";
+                echo "
+                    <form method='post' action='/logout'>
+                        <button type='submit'>Log out</button>
+                    </form>
+                ";
+            }
+            else {
+                echo "
+                    <button id='login-btn'>
+                        <a id='login-btn-text' href='/login'>Log in</a>
+                    </button>
+                ";
+            }
         ?>
     </span>
 </nav>

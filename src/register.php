@@ -12,8 +12,6 @@ class UserDetails {
         $this->password = $_password;
         $this->email = $_email;
     }
-
-
 }
 // post request to register should take a 
 function register_user(PDO $pdo, UserDetails $user): string {
@@ -21,7 +19,8 @@ function register_user(PDO $pdo, UserDetails $user): string {
     try {
         $pdo->beginTransaction();
         $statement = $pdo->prepare($query);
-        $statement->execute([$user->firstName, $user->email, $user->username, $user->password]);
+        $password = password_hash($user->password, PASSWORD_BCRYPT);
+        $statement->execute([$user->firstName, $user->email, $user->username, $password]);
         $pdo->commit();
     } catch (PDOException $e) {
         die("
@@ -31,6 +30,24 @@ function register_user(PDO $pdo, UserDetails $user): string {
         <p>" . $e . "</p>");
     }
     return "Registered user successfully";
+}
+
+function remove_user(PDO $pdo, string $username) {
+    try {
+        $query = $pdo->prepare("DELETE FROM users WHERE username = ?");
+        $query->execute([$username]);
+        $pdo->beginTransaction();
+        $pdo->commit();
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        die("
+            <h1>
+                Error
+            </h1><br>
+            <p>" . "Failed to delete $username: " . $e . "</p>"
+        );
+    }
+    return "deleted $username successfully";
 }
 
 function get_users(PDO $pdo) {
