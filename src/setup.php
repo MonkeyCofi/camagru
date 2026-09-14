@@ -13,6 +13,7 @@
                 PDO::ATTR_PERSISTENT => false,
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
             ]);
+            $pdo->beginTransaction();
             // create the table
             $query = "CREATE TABLE IF NOT EXISTS users (
                     UserID INT NOT NULL AUTO_INCREMENT,
@@ -22,6 +23,14 @@
                     Password CHAR(128) NOT NULL,
                     PRIMARY KEY(UserID)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+            $pdo->exec($query);
+            $query = "CREATE TABLE IF NOT EXISTS posts (
+                PostID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                UserID INT NOT NULL,
+                PostURL TEXT NOT NULL,
+                CreationTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY(UserID) REFERENCES users(UserID)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
             $pdo->exec($query);
         } catch (PDOException $e) {
             die("

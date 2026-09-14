@@ -1,10 +1,10 @@
 <?php
-    function login(PDO $pdo, array $body) {
+    function login(PDO $pdo, array $body): string {
         $pdo->beginTransaction();
         try {
             $statement = $pdo->prepare('SELECT UserId, username, pass, email FROM users where username = ?');
             $statement->execute([$body['username']]);
-            
+            $result = $statement->fetch(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
             $pdo->rollBack();
             die("
@@ -13,21 +13,24 @@
             </h1><br>
             <p>" . $e . "</p>");
         }
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        if (!$result) {
+            return "<p>No user found with that username</p>";
+        }
         if (!password_verify($body['password'], $result['pass'])) {
-
-            // return "403 forbidden";
+            return "403 forbidden";
         }
         $pdo->commit();
-        print_r($result);
         $_SESSION['user_id'] = $result['UserId'];
         $_SESSION['username'] = $result['username'];
-        header("Location: /gallery");
+        return "Successfully logged in";
+        // header("Location: /gallery");
     }
 
-    function logout() {
+    function logout(): string {
         session_destroy();
-        header("Location: /login");
+        unset($_SESSION['user_id'], $_SESSION['username']);
+        return "Logged out successfully";
+        // header("Location: /login");
     }
 
     function login_page(): string {

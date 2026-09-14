@@ -5,8 +5,19 @@
     require_once "gallery.php";
     require_once "setup.php";
     require_once "register.php";
+    require_once "upload.php";
 
     $pdo = setup_pdo();
+
+    function json_response(string $message, int $status = 200): array {
+        http_response_code($status);
+        return ["data" => $message, "status" => $status];
+    }
+
+    function json_request(): bool {
+        return str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json')
+        || (($_SERVER['CONTENT_TYPE'] ?? '') === 'application/json');
+    }
     class Router 
     {
         private static $router;
@@ -84,7 +95,6 @@
             $regexBody = preg_replace_callback(
                 '/\{([a-zA-Z_][a-zA-Z0-9_]*)\}/',
                 function ($m) use (&$paramNames) {
-                    print_r($m);
                     $paramNames[] = $m[1];
                     return '([^/]+)';
                 },
@@ -107,14 +117,26 @@
     $router = Router::get_router();
     $method = $_SERVER['REQUEST_METHOD'];
     $router->get('/login', fn() => login_page());
-    $router->post("/login", fn($params, $body) => login($pdo, $body));
-    $router->get('/gallery', fn() => gallery());
+    $router->get('/gallery', fn() => gallery($pdo));
     $router->get("/register", fn() => register());
+    $router->get("/users", fn() => get_users($pdo));
+    $router->get("/upload", fn() => upload_page());
+    $router->post("/login", fn($params, $body) => login($pdo, $body));
     $router->post("/register", fn($params, $body) => register_user($pdo, new UserDetails(
         $body['username'], $body['firstname'], $body['password'], $body['email']
     )), [test_email(...)]);
-    $router->get("/users", fn() => get_users($pdo));
     $router->post("/logout", fn() => logout());
+    $router->post("/upload", fn($params, $body) => upload($pdo));
+    // if (json_request())
+    //     printf("JSON request");
+    // else
+    //     printf("Standard HTML request");
+    /**
+     * save the response as a string
+     * build the header and the response code
+     * echo the response after the header and response codes are set
+     */
+    $response = $router->dispatch($_SERVER['REQUEST_URI']);
 ?>
 
 <!DOCTYPE html>
@@ -128,15 +150,8 @@
 <body>
     <?php 
         include "navbar.php";
-        // $request_method = $_SERVER['REQUEST_METHOD'];
-        // $user = null;
-        // if ($request_method == 'POST' && $uri == '/register') {
-        //     $user = new UserDetails($_POST['username'], $_POST['firstname'], $_POST['password'], $_POST['email']);
-        // }
-        // echo $router->dispatch($uri, $user);
-        // print_r($router->routes);
         echo "<br>";
-        echo $router->dispatch($_SERVER['REQUEST_URI']);
+        echo $response;
     ?>
 </body>
 </html>

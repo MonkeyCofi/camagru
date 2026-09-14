@@ -2,7 +2,10 @@
     <button class="sidebar-nav-opt">
         <a href="/gallery">Gallery</a>
     </button>
-    <button class="sidebar-nav-opt">Upload</button>
+    <button class="sidebar-nav-opt">
+        <a href="/upload">Upload</a>
+    </button>
+    <!-- <button class="sidebar-nav-opt">Upload</button> -->
     <button class="sidebar-nav-opt">Settings</button>
 </div>
 <nav id="navbar">

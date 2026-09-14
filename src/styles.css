@@ -1,7 +1,8 @@
 :root
 {
     --page-horizontal-margin: 1rem;
-    --main-font: 'Courier New', Courier, monospace;
+    /* --main-font: 'Inter', Courier, monospace; */
+    --main-font: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     --sidebar-color: rgb(255, 218, 185);
 }
 
@@ -172,4 +173,9 @@ body
 body
 {
     background-color: antiquewhite;
+}
+
+.post-image {
+    height: 30%;
+    width: 30%;
 }
