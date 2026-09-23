@@ -1,4 +1,5 @@
 <?php
+
     if (session_status() === PHP_SESSION_NONE)
         session_start();
     require_once "login.php";
@@ -6,9 +7,15 @@
     require_once "setup.php";
     require_once "register.php";
     require_once "upload.php";
-
+    require_once "home.php";
     $pdo = setup_pdo();
 
+
+    /**
+     * TODO
+     * Create a request object that takes all HTTP superglobals and turns them into a single object/interface
+     * This object would ensure that every superglobal will not be modified by any request
+     */
     function json_response(string $message, int $status = 200): array {
         http_response_code($status);
         return ["data" => $message, "status" => $status];
@@ -42,6 +49,10 @@
         public function post(string $uri, callable $controller, array $middleware = []): void {
             // $this->routes["POST"][$uri] = $controller;
             $this->register_route('POST', $uri, $controller, $middleware);
+        }
+
+        public function delete(string $uri, callable $controller, array $middleware = []): void {
+            $this->register_route("DELETE", $uri, $controller, $middleware);
         }
 
         private function register_route(string $method, string $uri, callable $handler, array $middleware): void {
@@ -85,6 +96,8 @@
         }
 
         public function normalize_url (string $url) {
+            if ($url == '/')
+                return $url;
             $new_url = parse_url($url, PHP_URL_PATH);
             $new_url = rtrim($new_url, '/');
             return $new_url;
@@ -110,6 +123,18 @@
         return null;
     }
 
+    /**
+     * password should contain at least:
+     * - one uppercase character
+     * - one lowercase character
+     * - one special character
+     * - one numerical character
+     * - a length of 7 characters 
+     */
+    // function test_password(array $params, array $body): string | null {
+    //     if (!)
+    // }
+
     // function test_username(array $params, array $body) {
         
     // }
@@ -121,12 +146,14 @@
     $router->get("/register", fn() => register());
     $router->get("/users", fn() => get_users($pdo));
     $router->get("/upload", fn() => upload_page());
+    $router->get("/", fn() => home());
     $router->post("/login", fn($params, $body) => login($pdo, $body));
     $router->post("/register", fn($params, $body) => register_user($pdo, new UserDetails(
-        $body['username'], $body['firstname'], $body['password'], $body['email']
+        $body['username'], $body['firstname'], $body['password'], $body['email'], $body['pfp'] ?? null
     )), [test_email(...)]);
     $router->post("/logout", fn() => logout());
     $router->post("/upload", fn($params, $body) => upload($pdo));
+    $router->delete("/users/{username}", fn($params, $body) => remove_user($pdo, $params['username']));
     // if (json_request())
     //     printf("JSON request");
     // else

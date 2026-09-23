@@ -65,7 +65,7 @@ function upload_page() {
     
     <video id='video' autoplay></video>
     <button id='captureButton'>Take Photo</button>
-    <canvas id='canvas' style='display:none;'></canvas>
+    <canvas id='upload-canvas' style='display:none;'></canvas>
     <img hidden id='photo' alt='Captured photo will appear here'>
     <form method='POST' enctype='multipart/form-data'>
         <input type='hidden' id='upload' accept='image/jpeg image/png image/jpg'>

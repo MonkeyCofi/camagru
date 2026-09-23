@@ -5,16 +5,25 @@ class UserDetails {
     public $firstName;
     public $password;
     public $email;
+    public $pfp;
 
-    public function __construct(string $_username, string $_firstName, string $_password, string $_email) {
+    public function __construct(string $_username, string $_firstName, string $_password, string $_email, string $_pfp) {
         $this->username = $_username;
         $this->firstName = $_firstName;
         $this->password = $_password;
         $this->email = $_email;
+        $this->pfp = $_pfp ?? null;
     }
 }
+
+// function download_pfp(string $) {
+
+// }
 // post request to register should take a 
 function register_user(PDO $pdo, UserDetails $user): string {
+    // print_r($user);
+    // if a pfp is provided, download it and save the filename in the Pfp column
+    print_r($_POST);
     $query = "INSERT INTO `users` (FirstName, Email, Username, Pass) VALUES (?, ?, ?, ?)";
     try {
         $pdo->beginTransaction();
@@ -55,16 +64,20 @@ function get_users(PDO $pdo) {
     $statement = $pdo->prepare($query);
     $statement->execute();
     $users = $statement->fetchAll(PDO::FETCH_ASSOC);
-    $html = "<!DOCTYPE HTML><ul id='users' style='display: flex; flex-direction: column; border: 1px solid black; list-style-type: none;'></ul>";
-    $doc = \DOM\HTMLDocument::createFromString($html);
-    $list = $doc->getElementById("users"); 
-    foreach($users as $user) {
-        $li = $doc->createElement('li');
-        $li->setAttribute('style', 'width: 20%;');
-        $li->textContent = "{$user['UserID']} {$user['Username']} {$user['Email']}";
-        $list->appendChild($li);
+    $html = "<ul id='users' style='display: flex; flex-direction: column; border: 1px solid black; list-style-type: none;'>";
+    foreach ($users as $user) {
+        $html .= "
+        <li style='width: 20%;' data-id='{$user['UserID']}' data-username='{$user['Username']}'>
+            {$user['UserID']} {$user["Username"]} {$user["Email"]}
+            <button class='remove-user'>
+                X
+            </button>
+        </li>";   
     }
-    return $doc->saveHtml();
+    $html .= "
+    </ul>
+    <script src='users.js'></script>";
+    return $html;
 }
 
 function register() {
@@ -77,6 +90,8 @@ function register() {
                 <input type="email" name="email" placeholder="Enter email">
                 <input type="text" name="username" placeholder="Enter username">
                 <input type="password" name="password" placeholder="Enter password">
+                <input id="upload-pfp" type="file" name="pfp" accept="image/jpeg image/jpg image/png">
+                <label id="upload-pfp-label" for="upload-pfp">Upload profile photo</label>
                 <input type="submit">
             </form>
         </div>

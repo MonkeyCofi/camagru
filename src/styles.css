@@ -179,3 +179,45 @@ body
     height: 30%;
     width: 30%;
 }
+
+#upload-pfp[type=file] {
+    display: none;
+}
+
+#upload-pfp-label {
+    background-color: rgb(22, 205, 163);
+    border: 1px solid black;
+    border-radius: 4px;
+}
+
+#upload-pfp-label:hover {
+    cursor: pointer;
+}
+
+.modal {
+    background-color: red;
+    position: absolute; 
+    left: 0; 
+    right: 0; 
+    margin-inline: auto; 
+    width: fit-content;
+    height: 200px;
+    width: 200px;
+}
+
+/* .modal-background {
+    background-color: rgba(155, 155, 155, 0.553);
+    height: 100%;
+    width: 100%;
+    position: fixed;
+} */
+
+.modal-text {
+    display: flex;
+    justify-content: center;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+}

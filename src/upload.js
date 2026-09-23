@@ -13,7 +13,7 @@ async function startCamera() {
 
 (async() => {
     const stream = await startCamera();
-    const canvas = document.getElementById('canvas');
+    const canvas = document.getElementById('upload-canvas');
     const photo = document.getElementById('photo');
     const captureButton = document.getElementById('captureButton');
     const uploadButton = document.getElementById('upload-capture-button');
@@ -22,9 +22,16 @@ async function startCamera() {
         video.hidden = true;
         captureButton.hidden = true;
         uploadButton.hidden = false;
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        const width = video.videoWidth;
+        const height = video.videoHeight;
+        const ctx = canvas.getContext("2d");
+        canvas.width = width;
+        canvas.height = height;
+        const imageWidth = width / 1.05;
+        const imageHeight = height / 1.05;
+        ctx.fillRect(0, 0, width, height);
+        ctx.fill();
+        ctx.drawImage(video, 0, 0, imageWidth, imageHeight);
         const formData = new FormData();
         canvas.toBlob((blob) => {
             const url = URL.createObjectURL(blob);
