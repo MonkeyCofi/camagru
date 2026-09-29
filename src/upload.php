@@ -51,26 +51,52 @@ function upload(PDO $pdo) {
     return "<p>Uploaded file successfully</p>";
 }
 
+/**
+ * Summary of list_filters
+ * fetches every filter in the images/filters folder and displays them as draggable elements
+ * @return void
+ */
+function list_filters(): string {
+    $dir = "./public/assets/images/filters";
+    $files = scandir($dir);
+    $html = "";
+    $filter_id = 0;
+    foreach ($files as $file) {
+        if ($file == '.' || $file == '..')
+            continue ;
+        $html .= "<img src='$dir/$file' id='{$filter_id}' data-src='$dir/$file' class='draggable' draggable='true'>";
+        $filter_id += 1;
+    }
+    return $html;
+}
+
 // this page should send a GET request for a javascript file
 function upload_page() {
+    // list_filters();
     // if there is no user session
     if (!isset($_SESSION['user_id']))
         return "<p>Must be logged in to upload photos</p>";
     // echo "<script src='./upload.js'></script>";
+    $str = list_filters();
     return "
     <form method='POST' action='/upload' enctype='multipart/form-data'>
-        <input type='file' name='upload' accept='image/jpeg image/jpg image/png'>
+        <input id='upload-image' type='file' name='upload' accept='image/jpeg image/jpg image/png'>
         <button type='submit'>Upload</button>
     </form>
     
-    <video id='video' autoplay></video>
-    <button id='captureButton'>Take Photo</button>
-    <canvas id='upload-canvas' style='display:none;'></canvas>
-    <img hidden id='photo' alt='Captured photo will appear here'>
-    <form method='POST' enctype='multipart/form-data'>
-        <input type='hidden' id='upload' accept='image/jpeg image/png image/jpg'>
-        <button id='upload-capture-button' type='submit' hidden>Upload</button>
-    </form>
+    <div id='preview'>
+        <video id='video' autoplay></video>
+        <button id='captureButton'>Take Photo</button>
+        <canvas id='upload-canvas' style='display:none;'></canvas>
+        <img hidden id='photo' alt='Captured photo will appear here'>
+        <div id='filter-panel'>
+            {$str}
+        </div>
+        <form method='POST' enctype='multipart/form-data'>
+            <input type='hidden' id='upload' accept='image/jpeg image/png image/jpg'>
+            <button id='upload-capture-button' type='submit' hidden>Upload</button>
+        </form>
+    </div>
     <script src='./upload.js'></script>
     ";
 }

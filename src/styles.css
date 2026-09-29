@@ -80,7 +80,7 @@ body
     padding: 0;
 }
 
-#post
+.post
 {
     /* display: flex;
     flex-direction: column; */
@@ -94,6 +94,13 @@ body
 #post-image
 {
     width: 100%;
+}
+
+#photo {
+    width: 50%;
+    height: 50%;
+    object-fit: cover;
+    display: block;
 }
 
 #post-image-container
@@ -220,4 +227,33 @@ body
 .modal-buttons {
     display: flex;
     justify-content: center;
+}
+
+#preview {
+    position: relative;
+    /* width: min(100%, 640px); */
+    /* aspect-ratio: 4/3; */
+    /* margin: 0 auto; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* #preview video, #preview #photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+} */
+
+#filter-panel {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#filter-panel > img {
+    width: 5%;
+    height: 5%;
 }

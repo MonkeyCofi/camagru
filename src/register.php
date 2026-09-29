@@ -42,10 +42,10 @@ function register_user(PDO $pdo, UserDetails $user): string {
 }
 
 function remove_user(PDO $pdo, string $username) {
+    $pdo->beginTransaction();
     try {
         $query = $pdo->prepare("DELETE FROM users WHERE username = ?");
         $query->execute([$username]);
-        $pdo->beginTransaction();
         $pdo->commit();
     } catch (Exception $e) {
         $pdo->rollBack();

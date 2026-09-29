@@ -8,6 +8,7 @@
     require_once "register.php";
     require_once "upload.php";
     require_once "home.php";
+    require_once "post.php";
     $pdo = setup_pdo();
 
 
@@ -154,6 +155,7 @@
     $router->post("/logout", fn() => logout());
     $router->post("/upload", fn($params, $body) => upload($pdo));
     $router->delete("/users/{username}", fn($params, $body) => remove_user($pdo, $params['username']));
+    $router->delete("/posts/{id}", fn($params, $body) => delete_post($pdo, $params['id']));
     // if (json_request())
     //     printf("JSON request");
     // else

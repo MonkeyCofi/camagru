@@ -8,11 +8,15 @@
                 const user = button.parentElement;
                 console.log(user.dataset.username);
                 console.log(user);
-                const res = await fetch(`/users/${user.dataset.username}`, {
-                    method: "DELETE"
-                })
-                if (res.ok) {
-                    location.reload();
+                try {
+                    const res = await fetch(`/users/${user.dataset.username}`, {
+                        method: "DELETE"
+                    })
+                    if (res.ok) {
+                        location.reload();
+                    }
+                } catch (error) {
+                    console.log(error);
                 }
             })
         })

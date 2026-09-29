@@ -3,3 +3,4 @@ public/assets/images
 .env
 data
 src/public/assets/images/uploads
+src/public/assets/images/filters

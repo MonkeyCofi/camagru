@@ -1,14 +1,15 @@
 <?php
     // display every uploaded photo and the username of the user who uploaded the photo
-    function post(string $user, string $url) {
+    function post(string $user, string $url, int $postId) {
         return "
-            <div id='post'>
+            <div class='post' data-id='{$postId}'>
                 <div id='post-user-info' style='display: flex; flex-direction: row; align-items: center;'>
                     <img id='profile-picture' src='public/assets/images/ugly ass guy.jpg'>
                     <h2 id='username'>$user</h2>
                 </div>
                 <div style='display: flex; justify-content: flex-end'>
                     <button id='toggle-comments'>Comments -&gt;</button>
+                    <button class='delete-post'>Delete</button>
                 </div>
                 <div id='post-image-container'>
                     <img id='post-image' src='$url'>
@@ -19,19 +20,17 @@
     // should fetch posts from the 
     function gallery(PDO $pdo) {
         // fetch posts from the $pdo
-        $query = "SELECT users.Username, posts.PostURL, posts.CreationTime FROM users INNER JOIN posts ON users.UserId = posts.UserID";
+        $query = "SELECT posts.PostId, users.Username, posts.PostURL, posts.CreationTime FROM users INNER JOIN posts ON users.UserId = posts.UserID";
         try {
             $pdo->beginTransaction();
             $statement = $pdo->prepare($query);
             $statement->execute();
             $posts = $statement->fetchAll(PDO::FETCH_ASSOC);
-            // print_r($posts);
-            $images = [];
             $ret = "";
             foreach ($posts as $post) {
                 // array_push($images, '<img src=$post["PostURL"] />');
                 // $ret = $ret . "<img class='post-image' src={$post["PostURL"]} />";
-                $ret = $ret . post($post["Username"], $post["PostURL"]);
+                $ret .= post($post["Username"], $post["PostURL"], $post["PostId"]);
             }
             
             // array_push($images, "<img src='")
@@ -44,6 +43,7 @@
             </h1><br>
             <p>" . $e . "</p>");
         }
+        $ret .= "<script src='posts.js'></script>";
         return $ret;
         // return "<p>Gallery</p>";
         // return post();
