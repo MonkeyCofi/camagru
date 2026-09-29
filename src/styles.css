@@ -96,11 +96,9 @@ body
     width: 100%;
 }
 
-#photo {
-    width: 50%;
-    height: 50%;
-    object-fit: cover;
+#preview #photo {
     display: block;
+    object-fit: fill;
 }
 
 #post-image-container
@@ -250,6 +248,11 @@ body
 
 #preview #photo {
     object-fit: fill;
+}
+
+.filter-overlay {
+    pointer-events: none;
+    user-select: none;
 }
 
 #filter-panel {

@@ -58,6 +58,8 @@ function upload(PDO $pdo) {
  */
 function list_filters(): string {
     $dir = "./public/assets/images/filters";
+    if (!is_dir($dir))
+        return "";
     $files = scandir($dir);
     $html = "";
     $filter_id = 0;
@@ -88,12 +90,9 @@ function upload_page() {
         <video id='video' autoplay></video>
         <canvas id='upload-canvas' style='display:none;'></canvas>
         <img hidden id='photo' alt='Captured photo will appear here'>
-        <form method='POST' enctype='multipart/form-data'>
-            <input type='hidden' id='upload' accept='image/jpeg image/png image/jpg'>
-            <button id='upload-capture-button' type='submit' hidden>Upload</button>
-        </form>
     </div>
     <button id='captureButton'>Take Photo</button>
+    <button id='upload-capture-button' hidden>Upload</button>
     <div id='filter-panel'>
         {$str}
     </div>
