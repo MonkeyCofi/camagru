@@ -94,6 +94,7 @@ preview.addEventListener("drop", (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
+    console.log(x, y);
     overlays.push({src: data, x: x, y: y, w: 200, h: 200});
     // print_overlays(overlays);
     // const canvas = document.getElementById("upload-canvas");

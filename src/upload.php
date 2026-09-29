@@ -86,16 +86,16 @@ function upload_page() {
     
     <div id='preview'>
         <video id='video' autoplay></video>
-        <button id='captureButton'>Take Photo</button>
         <canvas id='upload-canvas' style='display:none;'></canvas>
         <img hidden id='photo' alt='Captured photo will appear here'>
-        <div id='filter-panel'>
-            {$str}
-        </div>
         <form method='POST' enctype='multipart/form-data'>
             <input type='hidden' id='upload' accept='image/jpeg image/png image/jpg'>
             <button id='upload-capture-button' type='submit' hidden>Upload</button>
         </form>
+    </div>
+    <button id='captureButton'>Take Photo</button>
+    <div id='filter-panel'>
+        {$str}
     </div>
     <script src='./upload.js'></script>
     ";
