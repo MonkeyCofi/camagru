@@ -25,15 +25,17 @@ function print_dimensions(canvas) {
 }
 
 function setupCanvas(canvas, stream, video) {
-    if (stream && stream !== undefined) {
-        // canvas.height = video.videoHeight;
-        // canvas.width = video.videoWidth;
-        canvas.height = height;
-        canvas.width = width;
-    } else {
-        canvas.height = 500;
-        canvas.width = 500;
-    }
+    canvas.height = video ? video.videoHeight : 500;
+    canvas.width = video ? video.videoWidth : 500;
+    // if (stream && stream !== undefined) {
+    //     // canvas.height = video.videoHeight;
+    //     // canvas.width = video.videoWidth;
+    //     canvas.height = height;
+    //     canvas.width = width;
+    // } else {
+    //     canvas.height = 500;
+    //     canvas.width = 500;
+    // }
     return canvas.getContext("2d");
 }
 
