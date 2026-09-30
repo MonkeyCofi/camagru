@@ -2,7 +2,7 @@
     function login(PDO $pdo, array $body): string {
         $pdo->beginTransaction();
         try {
-            $statement = $pdo->prepare('SELECT UserId, username, pass, email FROM users where username = ?');
+            $statement = $pdo->prepare('SELECT UserId, Username, Password, Email FROM users where username = ?');
             $statement->execute([$body['username']]);
             $result = $statement->fetch(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
@@ -16,12 +16,15 @@
         if (!$result) {
             return "<p>No user found with that username</p>";
         }
-        if (!password_verify($body['password'], $result['pass'])) {
+        print_r($body);
+        echo "<br>";
+        print_r($result);
+        if (!password_verify($body['password'], $result['Password'])) {
             return "403 forbidden";
         }
         $pdo->commit();
         $_SESSION['user_id'] = $result['UserId'];
-        $_SESSION['username'] = $result['username'];
+        $_SESSION['username'] = $result['Username'];
         return "Successfully logged in";
         // header("Location: /gallery");
     }

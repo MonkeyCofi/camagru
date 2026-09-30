@@ -9,6 +9,9 @@ video.addEventListener("loadedmetadata", () => {
     width = video.videoWidth;
 });
 
+// array of objects with properties: [src, x, y, w, h]
+let overlays = [];
+
 async function startCamera() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -27,15 +30,6 @@ function print_dimensions(canvas) {
 function setupCanvas(canvas, stream, video) {
     canvas.height = video ? video.videoHeight : 500;
     canvas.width = video ? video.videoWidth : 500;
-    // if (stream && stream !== undefined) {
-    //     // canvas.height = video.videoHeight;
-    //     // canvas.width = video.videoWidth;
-    //     canvas.height = height;
-    //     canvas.width = width;
-    // } else {
-    //     canvas.height = 500;
-    //     canvas.width = 500;
-    // }
     return canvas.getContext("2d");
 }
 
@@ -51,27 +45,24 @@ function print_overlays(overlays) {
 }
 
 function render_overlays(overlays, canvas, ctx, img) {
-    console.log(`height ${canvas.height}, width ${canvas.width}`);
-    canvas.width = 500;
-    canvas.height = 500;
-    console.log(`height ${canvas.height}, width ${canvas.width}`);
     let image = new Image();
     image.src = img;
+    canvas.width = image.width;
+    canvas.height = image.height;
+    console.log(`width ${canvas.width} height ${canvas.height}`);
     ctx.drawImage(image, 0, 0);
     Array.from(overlays).forEach(overlay => {
         image = new Image();
+        image.width /= 4;
+        image.height /= 4;
         image.src = overlay.src;
-        ctx.drawImage(image, overlay.x, overlay.y);
+        ctx.drawImage(image, overlay.x / 4, overlay.y / 4);
         console.log("redrawing image");
     });
     const url = canvas.toDataURL();
     const photo = document.getElementById("photo");
-    console.log(url);
     photo.src = url;
 }
-
-// array of objects with properties: [src, x, y, w, h]
-let overlays = [];
 
 const preview = document.getElementById("preview");
 const filters = document.getElementsByClassName("draggable");
@@ -82,7 +73,6 @@ Array.from(filters).forEach((filter) => {
         e.dataTransfer.effectAllowed = "copy";
     });
 });
-
 
 preview.addEventListener("dragover", (e) => {
     e.preventDefault();

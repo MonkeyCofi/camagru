@@ -24,7 +24,7 @@ function register_user(PDO $pdo, UserDetails $user): string {
     // print_r($user);
     // if a pfp is provided, download it and save the filename in the Pfp column
     print_r($_POST);
-    $query = "INSERT INTO `users` (FirstName, Email, Username, Pass) VALUES (?, ?, ?, ?)";
+    $query = "INSERT INTO `users` (FirstName, Email, Username, Password) VALUES (?, ?, ?, ?)";
     try {
         $pdo->beginTransaction();
         $statement = $pdo->prepare($query);

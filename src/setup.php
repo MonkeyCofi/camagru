@@ -40,5 +40,22 @@
             <p>" . $e . "</p>");
             // die("<h1>Error: " . $e . "</h1>");
         }
+        // create the directory for filters and uploaded images
+        $filters_directory = "./public/assets/images/filters";
+        $upload_directory = "./public/assets/images/uploads";
+        if (!is_dir($filters_directory)) {
+            if (!mkdir($filters_directory, 0755, true)) {
+                // issue with creating directory for filters
+                die("<h1>Failed to create directory</h1>
+                    <p>Directory: $filters_directory</p>");
+            }
+        }
+        if (!is_dir($upload_directory)) {
+            if (!mkdir($upload_directory, 0755, true)) {
+                // issue with creating directory for filters
+                die("<h1>Failed to create directory</h1>
+                <p>Directory: $upload_directory</p>");
+            }
+        }
         return $pdo;
     }

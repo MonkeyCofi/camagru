@@ -20,35 +20,34 @@ services:
     networks:
       - app
   nginx:
-    # ports:
-    #   - "8080:80"
+    ports:
+      - "8080:80"
     build:
       context: ./nginx
-    image: nginx:alpine3.24
+    # image: nginx:alpine3.24
     container_name: nginx
     networks:
       - app
     volumes:
       - src:/var/www/html
-      # - public_files:/var/www/html/public
     environment:
       MARIADB_DATABASE: ${DB_NAME}
       MARIADB_USER: ${DB_USERNAME}
       MARIADB_PASSWORD: ${DB_PASSWORD}
-  hot-reload:
-    image: hot-reload
-    container_name: hot-reload
-    build:
-      context: ./dev/hot-reload
-    depends_on:
-      - nginx
-    ports:
-      - "8080:3000"
-      - "3000:3000"
-    volumes:
-      - src:/var/www/html
-    networks:
-      - app
+  # hot-reload:
+  #   image: hot-reload
+  #   container_name: hot-reload
+  #   build:
+  #     context: ./dev/hot-reload
+  #   depends_on:
+  #     - nginx
+  #   ports:
+  #     - "8080:3000"
+  #     - "3000:3000"
+  #   volumes:
+  #     - src:/var/www/html
+  #   networks:
+  #     - app
   php-fpm:
     # image: php:8-fpm
     image: php-fpm
