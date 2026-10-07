@@ -235,6 +235,7 @@ body
     aspect-ratio: 4/3;
     margin: 0 auto;
     display: block;
+    border: black solid 2px;
     /* display: flex;
     justify-content: center;
     align-items: center;
@@ -249,7 +250,7 @@ body
 }
 
 #preview #photo {
-    object-fit: fill;
+    object-fit: contain ;
 }
 
 #filter-panel {

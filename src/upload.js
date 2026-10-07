@@ -3,11 +3,14 @@ let height = 0;
 let width = 0;
 const canvas = document.getElementById('upload-canvas');
 const photo = document.getElementById('photo');
-
+const defaultW = 1024;
+const defaultH = 768;
 video.addEventListener("loadedmetadata", () => {
     height = video.videoHeight;
     width = video.videoWidth;
 });
+canvas.height = defaultH;
+canvas.width = defaultW;
 
 // array of objects with properties: [src, x, y, w, h]
 let overlays = [];
@@ -28,8 +31,8 @@ function print_dimensions(canvas) {
 }
 
 function setupCanvas(canvas, stream, video) {
-    canvas.height = video ? video.videoHeight : 500;
-    canvas.width = video ? video.videoWidth : 500;
+    canvas.height = video ? video.videoHeight : defaultH;
+    canvas.width = video ? video.videoWidth : defaultW;
     return canvas.getContext("2d");
 }
 
@@ -48,16 +51,20 @@ function render_overlays(overlays, canvas, ctx, img) {
     let image = new Image();
     image.src = img;
     canvas.width = image.width;
-    canvas.height = image.height;
-    console.log(`width ${canvas.width} height ${canvas.height}`);
+    // canvas.height = image.height;
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
+    console.log(`canvaswidth ${canvas.width} height ${canvas.height}`);
     ctx.drawImage(image, 0, 0);
     Array.from(overlays).forEach(overlay => {
+        console.log('sticker widht: ', overlay.w, 'sticker height: ', overlay.h);
         image = new Image();
-        image.width /= 4;
-        image.height /= 4;
+        image.width = overlay.w;
+        image.height = overlay.h;
         image.src = overlay.src;
-        ctx.drawImage(image, overlay.x / 4, overlay.y / 4);
-        console.log("redrawing image");
+        console.log('drawing: ', overlay);
+        ctx.drawImage(image, overlay.x, overlay.y, overlay.width, overlay.height);
+        // ctx.drawImage(image, overlay.x, overlay.y);
     });
     const url = canvas.toDataURL();
     const photo = document.getElementById("photo");
@@ -82,25 +89,43 @@ preview.addEventListener("dragover", (e) => {
 
 preview.addEventListener("drop", (e) => {
     e.preventDefault();
-    const data = e.dataTransfer.getData("text/plain");
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    console.log(x, y);
-    overlays.push({src: data, x: x, y: y, w: 200, h: 200});
-    // print_overlays(overlays);
-    // const canvas = document.getElementById("upload-canvas");
     const ctx = canvas.getContext("2d");
-    const img = photo.src;
-    render_overlays(overlays, canvas, ctx, img);
+    const img = photo;
+    const imgSrc = photo.src;
+    const stickerCanvas = document.getElementById("upload-canvas");
+
+    const rect = preview.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * (stickerCanvas.width / rect.width);
+    const y = (e.clientY - rect.top) * (stickerCanvas.height / rect.height);
+    console.log('test: ', e.x, 'test: ', e.y);
+    const data = e.dataTransfer.getData("text/plain");
+    console.log(`placing at ${x}, ${y}`);
+    // const overlay = {src: data, x: x, y: y, w: stickerW, h: stickerH}
+    const stickerImg = new Image();
+    stickerImg.onload = () => {
+        const stickerW = stickerCanvas.width * 0.25;
+        const stickerH = stickerW * (stickerImg.naturalHeight / stickerImg.naturalWidth);
+        console.log('stickerW: ', stickerW, ' stickerH: ', stickerH);
+        const overlay = {src: data, x: x, y: y, w: stickerW, h: stickerH}
+        overlays.push(overlay);
+        render_overlays(overlays, canvas, ctx, imgSrc);
+    };
+    stickerImg.src = data;
 });
+
+// preview.addEventListener("mousemove", (e) => {
+//     const rect = preview.getBoundingClientRect();
+//     console.log(`mouse at ${e.x - rect.x}, ${e.y - rect.y}`);
+//     console.log('rect: ', rect);
+// });
 
 (async() => {
     const stream = await startCamera();
     const captureButton = document.getElementById('captureButton');
     const uploadButton = document.getElementById('upload-capture-button');
     const photoInput = document.getElementById("upload-image");
-    const ctx = setupCanvas(canvas, stream, video);
+    // const ctx = setupCanvas(canvas, stream, video);
+    const ctx = canvas.getContext("2d");
     photoInput.addEventListener('change', (event) => {
         // temporarily open the photo and store it in a blob
         const file = event.target.files[0];
@@ -108,8 +133,8 @@ preview.addEventListener("drop", (e) => {
         if (file) {
             video.hidden = true;
             photo.hidden = false;
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
+            // canvas.width = video.videoWidth;
+            // canvas.height = video.videoHeight;
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             const url = URL.createObjectURL(file);
             photo.src = url;
