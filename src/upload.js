@@ -47,6 +47,12 @@ function print_overlays(overlays) {
     })
 }
 
+const clear = document.getElementById("clear-stickers");
+clear.addEventListener('click', (e) => {
+    overlays.length = 0;
+    console.log("button was clicked");
+})
+
 function render_overlays(overlays, canvas, ctx, img) {
     let image = new Image();
     image.src = img;
@@ -55,7 +61,7 @@ function render_overlays(overlays, canvas, ctx, img) {
     canvas.width = image.naturalWidth;
     canvas.height = image.naturalHeight;
     console.log(`canvaswidth ${canvas.width} height ${canvas.height}`);
-    ctx.drawImage(image, 0, 0);
+    ctx.drawImage(image, 0, 0); // draw the main image
     Array.from(overlays).forEach(overlay => {
         console.log('sticker widht: ', overlay.w, 'sticker height: ', overlay.h);
         image = new Image();
@@ -63,13 +69,64 @@ function render_overlays(overlays, canvas, ctx, img) {
         image.height = overlay.h;
         image.src = overlay.src;
         console.log('drawing: ', overlay);
-        ctx.drawImage(image, overlay.x, overlay.y, overlay.width, overlay.height);
-        // ctx.drawImage(image, overlay.x, overlay.y);
+        ctx.drawImage(image, overlay.x, overlay.y, overlay.w, overlay.h);
+        // ctx.drawImage(image, 0, 0, overlay.w, overlay.h);
     });
     const url = canvas.toDataURL();
     const photo = document.getElementById("photo");
     photo.src = url;
 }
+
+/**
+ * as soon as the image is dragged from the preview, draw the sticker
+ * it should be drawn from the current mouse position on screen
+ */
+
+const panel = document.getElementById("filter-panel");
+Array.from(panel.childNodes).forEach(sticker => {
+    // if this sticker is dragged, draw it on the current point of the mouse
+    sticker.addEventListener('mousedown', (e) => {
+        // console.log('down');
+        console.log('place x: ', e.x, 'place y: ', e.y);
+        const img = new Image();
+        img.src = sticker.src;
+        img.style.position = 'absolute';
+        img.style.zIndex = 1000;
+        document.body.append(img);
+        function moveAt(pageX, pageY) {
+            img.style.left = pageX - img.offsetWidth / 2 + 'px';
+            img.style.top = pageY - img.offsetHeight / 2 + 'px';
+        }
+        moveAt(e.pageX, e.pageY);
+        function onMouseMove(event) {
+            moveAt(event.pageX, event.pageY);
+        }
+        document.addEventListener('mousemove', onMouseMove);
+        sticker.onmouseup = () => {
+            document.removeEventListener('mouseMove', onMouseMove);
+            sticker.onmouseup = null;
+        }
+        sticker.ondragstart = function() {
+            return false;
+        }
+    });
+    // sticker.addEventListener('drag', (e) => {
+    //     // only draw once
+    //     const ctx = canvas.getContext("2d");
+    //     const image = new Image();
+    //     image.src = sticker.src;
+    //     image.onload = () => {
+    //         canvas.addEventListener()
+    //             // const rect = canvas.getBoundingClientRect();
+    //             // console.log('rect: ', rect);
+    //             // const x = e.clientX - rect.left;
+    //             // const y = e.clientY - rect.top;
+    //             // ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //             // ctx.drawImage(image, x - image.width / 2, y - image.height / 2);
+    //     }
+    // })
+});
+
 
 const preview = document.getElementById("preview");
 const filters = document.getElementsByClassName("draggable");

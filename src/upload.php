@@ -83,6 +83,8 @@ function upload_page() {
         <input id='upload-image' type='file' name='upload' accept='image/jpeg image/jpg image/png'>
         <button type='submit'>Upload</button>
     </form>
+
+    <button id='clear-stickers'>Clear Stickers</button>
     
     <div id='preview'>
         <video id='video' autoplay></video>
