@@ -1,5 +1,7 @@
 <?php
 
+require_once 'login.php';
+
 class UserDetails {
     public $username;
     public $firstName;
@@ -38,6 +40,7 @@ function register_user(PDO $pdo, UserDetails $user): string {
         </h1><br>
         <p>" . $e . "</p>");
     }
+    login($pdo, array($user));
     return "Registered user successfully";
 }
 

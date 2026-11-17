@@ -1,5 +1,11 @@
 <?php
     function login(PDO $pdo, array $body): string {
+        foreach ($_SERVER as $header => $value) {
+            print_r($header);
+            echo ": ";
+            print_r($value);
+            echo "<br>";
+        }
         $pdo->beginTransaction();
         try {
             $statement = $pdo->prepare('SELECT UserId, Username, Password, Email FROM users where username = ?');

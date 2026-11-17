@@ -78,6 +78,7 @@ function upload_page() {
         return "<p>Must be logged in to upload photos</p>";
     // echo "<script src='./upload.js'></script>";
     $str = list_filters();
+    $script_version = filemtime(__DIR__ . "/upload.js");
     return "
     <form method='POST' action='/upload' enctype='multipart/form-data'>
         <input id='upload-image' type='file' name='upload' accept='image/jpeg image/jpg image/png'>
@@ -99,6 +100,6 @@ function upload_page() {
     <div id='filter-panel'>
         {$str}
     </div>
-    <script src='./upload.js'></script>
+    <script src='./upload.js?v={$script_version}'></script>
     ";
 }
